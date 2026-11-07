@@ -170,7 +170,7 @@ impl Worker {
 			.repo
 			.diff_index_to_workdir(None, Some(&mut diff_options))
 			.expect("Can't `git diff`");
-		let diff_stats = diff.stats().expect("Diff stats");
+		let diff_stats = diff.stats().ok();
 		info!("Diff: {:#?}", diff.stats());
 		if diff.deltas().all(|d| {
 			let Some(path) = d.new_file().path().or(d.old_file().path()) else {
@@ -182,14 +182,16 @@ impl Worker {
 			info!("All affected files are ignored.");
 			return;
 		}
-		if diff_stats.files_changed() > 0 {
-			info!(
-				"Got new changes. (+{}/-{}), ->WAIT",
-				diff_stats.insertions(),
-				diff_stats.deletions()
-			);
-			self.state = State::Wait;
+		match diff_stats {
+			Some(stats) => info!(
+				"Got new changes (+{}/-{} over {} files), ->WAIT",
+				stats.insertions(),
+				stats.deletions(),
+				stats.files_changed()
+			),
+			None => info!("Got new changes (stats unavailable - still reading?), ->WAIT")
 		}
+		self.state = State::Wait
 	}
 
 	/// Command socket connection.

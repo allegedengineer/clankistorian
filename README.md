@@ -1,5 +1,5 @@
 # Clankistorian
 
-(Clanker historian.)
+(clanker historian.)
 
 A tool that watches your git repository and generates passable commit messages while you work using a local LLM.

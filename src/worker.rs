@@ -119,7 +119,8 @@ impl Worker {
 						self.state = State::Done;
 						continue;
 					}
-					let timer = tokio::time::sleep(Duration::from_secs(5));
+					let timer =
+						tokio::time::sleep(Duration::from_secs_f32(self.config.poll_interval));
 					let notify = self.notify.notified();
 					let command = self.socket.accept();
 					tokio::select! {
@@ -132,6 +133,7 @@ impl Worker {
 					let timer =
 						tokio::time::sleep(Duration::from_secs_f32(self.config.wait_before_commit));
 					let notify = self.notify.notified();
+					let command = self.socket.accept();
 					tokio::select! {
 						_ = timer => self.state = State::Stage,
 						_ = notify => {
@@ -139,6 +141,7 @@ impl Worker {
 							tokio::time::sleep(Duration::from_millis(100)).await;
 							continue
 						},
+						connection = command => self.connection(connection.expect("Control socket error").0).await
 					}
 				}
 				State::Stage => self.stage().await,
@@ -430,13 +433,12 @@ impl Worker {
 		let mut index = self.repo.index().unwrap();
 		let tree = index.write_tree().unwrap();
 		let tree = self.repo.find_tree(tree).unwrap();
-		let author = Signature::now("clankistorian", "bogus@squash.me").unwrap();
-		let committer = self.repo.signature().unwrap();
+		let sig = self.repo.signature().unwrap();
 		let message = format!("{}{commit_msg}", self.config.prefix);
 		let head = self.repo.find_reference("HEAD").unwrap();
 		let head = head.peel_to_commit().unwrap();
 		self.repo
-			.commit(Some("HEAD"), &author, &committer, &message, &tree, &[&head])
+			.commit(Some("HEAD"), &sig, &sig, &message, &tree, &[&head])
 			.unwrap();
 		self.state = State::Idle;
 	}

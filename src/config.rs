@@ -36,6 +36,9 @@ pub struct Config {
 	/// Globs to strip from the diff to save context.
 	#[arg(long = "noisy-file", env = "CLANKISTORIAN_NOISY_FILES")]
 	pub noisy_files: Vec<String>,
+	/// Time (in seconds) between idle ticks (where we check for active changes).
+	#[arg(long, default_value = "5", env = "CLANKISTORIAN_POLL_INTERVAL")]
+	pub poll_interval: f32,
 	/// Timer (in seconds) that starts on the most recent change.
 	/// When it ends, we commit and start writing a commit message.
 	#[arg(long, default_value = "30", env = "CLANKISTORIAN_WAIT_BEFORE_COMMIT")]

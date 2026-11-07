@@ -1,0 +1,3 @@
+silent_files = [".git/**/*", "target/**/*"]
+noisy_files = ["Cargo.lock"]
+think = true

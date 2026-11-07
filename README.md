@@ -14,6 +14,9 @@ This repository has unfiltered Clankistorian output in its history as a demonstr
 
 * Install Ollama.
 * Install clankistorian: `cargo install --git https://github.com/allegedengineer/clankistorian`
-* Write a `clankistorian.toml` to configure the repository where you're using it.
+* Write a `clankistorian.toml` to in the root of the repository where you're using it.
   * This isn't terribly well-documented, see [config.rs](src/config.rs) for details.
   * You should at least configure `silent_files` and `noisy_files` so that your `Cargo.lock` doesn't overflow the context window.
+  * It might also be worth tuning the timers to better match your own style.
+* Run `clankistorian start`
+* ...Profit?

@@ -163,7 +163,9 @@ impl Worker {
 			return;
 		}
 		let mut diff_options = DiffOptions::new();
-		diff_options.include_untracked(true);
+		diff_options.include_untracked(true)
+			.recurse_untracked_dirs(true)
+			.show_binary(true);
 		let diff = self
 			.repo
 			.diff_index_to_workdir(None, Some(&mut diff_options))

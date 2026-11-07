@@ -2,7 +2,7 @@
 
 (clanker historian.)
 
-A tool that watches your git repository and generates "so-so" commit messages while you work using a local LLM.
+A tool that uses a local LLM to watch your git repository and generate half-decent commit messages while you work.
 
 ## Advice on using Clankistorian
 

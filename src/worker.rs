@@ -275,7 +275,7 @@ impl Worker {
 						let _ = writeln!(
 							diff_txt,
 							"{path:#?} created, its content follows:\n<content>\n{}\n</content>",
-							tokio::fs::read_to_string(path).await.unwrap()
+							tokio::fs::read_to_string(path).await.unwrap_or("<binary file>".into())
 						);
 					}
 					Delta::Deleted => {
